@@ -1,0 +1,40 @@
+﻿@inject AuthService Auth
+
+<div class="top-row ps-3 navbar navbar-dark bg-success">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Магазин Догляд</a>
+    </div>
+</div>
+
+<nav class="flex-column p-3 bg-light vh-100">
+    <NavLink class="nav-link" href="">
+        🏠 Головна
+    </NavLink>
+
+    <NavLink class="nav-link" href="cart">
+        🛒 Кошик
+    </NavLink>
+
+    <NavLink class="nav-link" href="profile">
+        👤 Профіль
+    </NavLink>
+
+    @if (!Auth.IsLoggedIn)
+    {
+        <NavLink class="nav-link" href="login">
+            🔐 Вхід
+        </NavLink>
+    }
+</nav>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Auth.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        Auth.OnChange -= StateHasChanged;
+    }
+}

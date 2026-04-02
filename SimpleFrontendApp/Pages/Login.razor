@@ -1,0 +1,61 @@
+﻿@page "/login"
+@inject AuthService Auth
+@inject NavigationManager Nav
+
+@if (Auth.IsLoggedIn)
+{
+    <p>Ви вже увійшли як @Auth.CurrentUser</p>
+}
+else
+{
+    <h3>Вхід</h3>
+
+    <input placeholder="Логін" @bind="login" class="form-control mb-2" />
+    <input placeholder="Пароль" type="password" @bind="password" class="form-control mb-2" />
+
+    <button class="btn btn-primary w-100 mb-2" @onclick="DoLogin">Увійти</button>
+    <button class="btn btn-secondary w-100" @onclick="DoRegister">Зареєструватися</button>
+
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <p style="color:red">@error</p>
+    }
+}
+
+@code {
+    string login;
+    string password;
+    string error;
+
+    void DoLogin()
+    {
+        if (Auth.Login(login, password))
+        {
+            error = null;
+            Nav.NavigateTo("/profile"); // після логіну редірект на профіль
+        }
+        else
+        {
+            error = "Невірний логін або пароль";
+        }
+    }
+
+    void DoRegister()
+    {
+        if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
+        {
+            error = "Заповніть логін і пароль";
+            return;
+        }
+
+        if (Auth.Register(login, password))
+        {
+            error = null;
+            DoLogin(); // після реєстрації автоматично логін
+        }
+        else
+        {
+            error = "Користувач з таким логіном вже існує";
+        }
+    }
+}

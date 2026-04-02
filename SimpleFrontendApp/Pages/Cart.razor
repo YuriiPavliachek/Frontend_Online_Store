@@ -1,0 +1,28 @@
+﻿@page "/cart"
+@inject CartService CartService
+
+<h3>🛒 Ваш кошик</h3>
+
+@if (!CartService.Items.Any())
+{
+    <p>Кошик порожній</p>
+}
+else
+{
+    <ul>
+        @foreach (var item in CartService.Items)
+        {
+            <li>@item.Product.Name - @item.Quantity x @item.Product.Price грн</li>
+        }
+    </ul>
+    <p>Всього: @CartService.GetTotal() грн</p>
+    <button class="btn btn-primary w-100 mt-3" @onclick="Pay">Оплатити</button>
+}
+@code {
+    void Pay()
+    {
+        Console.WriteLine("Натиснули оплатити. Сума: " + CartService.GetTotal() + " грн");
+        CartService.Items.Clear();
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,55 @@
+﻿@page "/"
+@inject CartService CartService
+
+<h3>🧼 Побутова хімія</h3>
+
+<div style="display: flex; gap: 20px;">
+
+    <!-- Список товарів -->
+    <div class="products" style="flex: 3;">
+        @foreach (var product in products)
+        {
+            <div class="card" style="margin-bottom:10px;">
+                <img src="@product.Image" style="width:200px;height:200px;object-fit:contain" />
+                <h4>@product.Name</h4>
+                <p>@product.Price грн</p>
+                <button class="btn btn-success w-100" @onclick="() => AddToCart(product)">Додати в кошик</button>
+            </div>
+        }
+    </div>
+
+    <!-- Кошик збоку -->
+    <div class="cart-sidebar" style="flex: 1; border:1px solid #ccc; padding:10px; height: fit-content;">
+        <h4>🛒 Кошик</h4>
+        @if (!CartService.Items.Any())
+        {
+            <p>Кошик порожній</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var item in CartService.Items)
+                {
+                    <li>@item.Product.Name - @item.Quantity x @item.Product.Price грн</li>
+                }
+            </ul>
+            <p><b>Всього: @CartService.GetTotal() грн</b></p>
+        }
+    </div>
+</div>
+
+@code {
+    List<Product> products = new()
+    {
+        new Product { Id=1, Name="Ariel", Price=320, Image="images/ariel.jpg" },
+        new Product { Id=2, Name="Fairy", Price=85, Image="images/fairy.jpg" },
+        new Product { Id=3, Name="Domestos", Price=95, Image="images/domestos.jpg" },
+        new Product { Id=4, Name="Mr.Proper", Price=110, Image="images/mrproper.jpg" }
+    };
+
+    void AddToCart(Product product)
+    {
+        CartService.AddToCart(product);
+        StateHasChanged(); // оновлюємо UI після додавання
+    }
+}

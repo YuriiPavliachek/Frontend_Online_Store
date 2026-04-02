@@ -1,0 +1,30 @@
+﻿@page "/profile"
+@inject AuthService Auth
+@inject NavigationManager Nav
+
+@if (!Auth.IsLoggedIn)
+{
+    <p>Ви не авторизовані. Перехід на сторінку входу...</p>
+}
+else
+{
+    <h3>Профіль користувача</h3>
+    <p>Вітаємо, @Auth.CurrentUser!</p>
+    <button class="btn btn-danger" @onclick="Logout">Вийти</button>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (!Auth.IsLoggedIn)
+        {
+            Nav.NavigateTo("/login");
+        }
+    }
+
+    void Logout()
+    {
+        Auth.Logout();
+        Nav.NavigateTo("/login");
+    }
+}
